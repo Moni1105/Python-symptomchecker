@@ -1,37 +1,119 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Symptom Checker</title>
-   <link href="{{url_for('static',filename='css/style.css')}}" rel="stylesheet"/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Healthcare Information Portal</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    <!--<img src="https://media.istockphoto.com/id/1213418763/vector/woman-infected-with-coronavirus-suffer-symptoms.jpg?s=1024x1024&w=is&k=20&c=dauX9qdvBYFt6wTeK0PPed8c8vtJ89JAVZ3wd_pWE-0=" alt="Placeholder Image" class="side-image">-->
-    <h1>Symptom checker application</h1>
-    <form action="/Symptomchecker">
-    <p><label for="EnterSymptoms">Enter your symptoms:</label></p>
-    <textarea id="symptoms" name="symptoms" rows="10" cols="50"></textarea>
-    <br>
-    <p>(eg 1: I have red eyes for last 3 days)</p>
-    <button type="submit" class="button-1">Check Results</button>
-    <button type="reset" class= "button-1" >Clear</button>
-    <!-- Changed input type to button for better control -->
-    <br>
-    <br>
-    <div class="output-container">
-    <h2>Symptom Checker Results</h2>
+    <header>
+        <h1>Healthcare Information Portal</h1>
+    </header>
 
-    <div class="section">
+    <div class="container">
+        <div class="left-container">
+            <h2>Select an Option:</h2>
+            <button class="button-2" onclick="showSymptomChecker()">Symptom Checker</button>
+            <button class="button-2" onclick="showHealthInformation()">General Health Information</button>
 
-        <ul id="potentialCauses"></ul>
+            <!-- Symptom Checker Content -->
+            <div id="symptomChecker" style="display: none;">
+                <h2>Symptom Checker</h2>
+                <form id="myForm1" action="/symptom_checker">
+                <p>Please enter your symptoms:</p>
+                <textarea id="symptoms" name="symptoms" rows="10" cols="50"></textarea>
+                <br>
+                <p>(eg 1: I have red eyes for last 3 days)</p>
+                <p>(eg 2:I am 35 years old female and having severe head ache for last 5 days)</p>
+                <button  class="button-1" onclick="checkAndSubmit()">Check Results</button>
+                <button  class="button-1" onclick="clearFields()">Clear</button>
+                <br><br>
+                <div class="output-container">
+                    <h3>Symptom Checker Results</h3>
+                    <div class="section">
+                        <ul id="potentialCauses">  {% for cause in symptom_data["potentialCauses"] %}
+                            <li>{{ cause }}</li>
+                        {% endfor %}</ul>
+                    </div>
+                    <div class="section">
+                        <ul id="followupQuestions">{% for question in symptom_data["followupQuestions"] %}
+                            <li>{{ question }}</li>
+                        {% endfor %}</ul>
+                    </div>
+                </div>
+            </form>
+            </div>
+
+            <!-- General Health Information Content -->
+            <div id="healthInformation" style="display: none;">
+                <h2>General Health Information</h2>
+                <p>Please provide the following information:</p>
+                <form id="myForm2" action="/fetch_health_data">
+                    <label for="gender">Gender:</label>
+                    <select id="gender" name="gender">
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                    </select><br><br>
+                    <label for="age">Age:</label>
+                    <input type="number" id="age" name="age" min="1" max="150"><br><br>
+                    <button type="submit" class="button-1">Fetch Health Data</button>
+                </form>
+                <br><br>
+                <div class="output-container" id="healthInfoOutput">
+                    <h2>Health info results</h2>
+                    <h3>{{ heading }}</h3>
+                    <ul></ul>
+                        {% for resource in resources %}
+                            <p><a href="{{ resource.link }}" target="_blank">{{ resource.title }}</a></p>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="right-container">
+            <!-- Implementation Description -->
+            <div class="implementation-description">
+                <h2>Implementation Description:</h2>
+                <p>Add your implementation description here...</p>
+            </div>
+
+            <!-- Client-Server Architecture Diagram -->
+            <div class="client-server-architecture-diagram">
+                <h2>Client-Server Architecture Diagram:</h2>
+                <img src="{{ url_for('static', filename='path_to_your_diagram_image.jpg') }}" alt="Client-Server Architecture Diagram">
+            </div>
+        </div>
     </div>
-    <div class="section">
 
-        <ul id="followupQuestions"></ul>
-    </div>
+        <script>
+    function showSymptomChecker() {
+        document.getElementById("symptomChecker").style.display = "block";
+        document.getElementById("healthInformation").style.display = "none";
+    }
 
-    </div>
-</form>
-    
+    function showHealthInformation() {
+        document.getElementById("symptomChecker").style.display = "none";
+        document.getElementById("healthInformation").style.display = "block";
+    }
+
+    function checkAndSubmit() {
+        var symptoms = document.getElementById("symptoms").value.trim();
+        if (symptoms === "") {
+            alert("Please enter your symptoms.");
+            return false; // Prevent form submission
+        } else {
+            // Don't submit the form
+            return false;
+        }
+    }
+
+    function clearFields() {
+        document.getElementById("symptoms").value = ""; // Clear textarea
+        document.getElementById("potentialCauses").innerHTML = ""; // Clear potential causes
+        document.getElementById("followupQuestions").innerHTML = ""; // Clear follow-up questions
+    }
+    </script>
 </body>
-
 </html>

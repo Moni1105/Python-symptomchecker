@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Healthcare Information Portal</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+    <header>
+        <h1>Healthcare Information Portal</h1>
+    </header>
+
+    <div class="container">
+        <div class="left-container">
+            <h2>Select an Option:</h2>
+            <button class="button-2" onclick="showSymptomChecker()">Symptom Checker</button>
+            <button class="button-2" onclick="showHealthInformation()">General Health Information</button>
+
+            <!-- Symptom Checker Content -->
+            <div id="symptomChecker" style="display: none;">
+                <h2>Symptom Checker</h2>
+                <form id="myForm1" action="/symptom_checker">
+                    <p>Please enter your symptoms:</p>
+                    <textarea id="symptoms" name="symptoms" rows="10" cols="50"></textarea>
+                    <br>
+                    <p>(eg 1: I have red eyes for last 3 days)</p>
+                    <p>(eg 2:I am 35 years old female and having severe head ache for last 5 days)</p>
+                    <button type="button" class="button-1" onclick="checkAndSubmit()">Check Results</button>
+                    <button type="button" class="button-1" onclick="clearFields()">Clear</button>
+                    <br><br>
+                    <div class="output-container">
+                        <h3>Symptom Checker Results</h3>
+                        <div class="section">
+                            <ul id="potentialCauses">
+                                {%if symptom_data %}
+                                <script>
+                                    document.getElementById("symptomChecker").style.display = "block";
+                                </script>
+                                {% for cause in symptom_data["potentialCauses"] %}
+                                <li>{{ cause }}</li>
+                                {% endfor %}
+                                {% endif %}
+
+                            </ul>
+                        </div>
+                        <div class="section">
+                            <ul id="followupQuestions">{%if symptom_data %}
+                                {% for question in symptom_data["followupQuestions"] %}
+                                <li>{{ question }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- General Health Information Content -->
+            <div id="healthInformation" style="display: none;">
+                <h2>General Health Information</h2>
+                <p>Please provide the following information:</p>
+                <form id="myForm2" action="/fetch_health_data">
+                    <label for="gender">Gender:</label>
+                    <select id="gender" name="gender">
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                    </select><br><br>
+                    <label for="age">Age:</label>
+                    <input type="number" id="age" name="age" min="1" max="150"><br><br>
+                    <button type="button" class="button-1" onclick="checkASubmitHealth()">Fetch Health Data</button>
+                    <button type="button" class="button-1" onclick="clearHealth()">Clear</button>
+                    <br><br>
+                    <div class="output-container" id="healthInfoOutput">
+                        <h2>Health info results</h2>
+                        {% if health_data %}
+                        <script>
+                            document.getElementById("healthInformation").style.display = "block";
+                        </script>
+                        <h3 id="heading">{{health_data['heading']}}</h3>
+                        <ul id="resources">
+                            {% for resource in health_data['resources'] %}
+
+                            <p><a href="{{ resource.link }}" target="_blank">{{ resource.title }}</a></p>
+                            {% endfor %}
+                            {% endif %}
+                        </ul>
+                    </div>
+                </form>
+            </div>
+            <div class="implementation-description">
+                <h2>Application Description:</h2>
+                <ul>
+                    <li><b>Application Description:</b> This application provides two functional services: Symptom
+                        Checker and General Health Information, located on the left side of this HTML page. </li>
+                    <li>The <b>Symptom Checker</b> functionality aims to diagnose possible diseases and situations that
+                        may be encountered by a patient based on the symptoms provided by the user.</li>
+                    <li>The <b>General Health Information</b> functionality provides US-based preventive measures,
+                        healthcare information, questions to ask a doctor, and a list of tests that should be done by a
+                        person based on the user's gender and age.</li>
+                </ul>
+            </div>
+
+        </div>
+
+        <div class="right-container">
+            <!-- Implementation Description -->
+            <div class="implementation-description">
+                <h2>Implementation Description:</h2>
+                <ul>
+                    <li><b>Framework:</b> Python - flask</li>
+                    <li><b>External APIs used:</b> SymptomChecker (Rapid API) and HealthFinder (Gov Free API)</li>
+                    <li><b>API Integration:</b> Using python library requests method</li>
+                    <li><b>Render.com:</b> To host this application on the internet and allow anyone to access it</li>
+                    <li><b>Symptom Checker:</b> If you click on symptom checker button on left side. It opens the block
+                        showing input box for user to enter thier symptoms, when user click on "check results" button,
+                        performs th api(symptom_checker) call and fetch the response to user. Clear button will clear
+                        output results and user input.</li>
+                    <li><b>General Health Information:</b> If you click on General Health Information button on left
+                        side. Allows user to enter information about gender and age , when user click on "fetch Health
+                        data" button, performs th api(Health Finder) call and display the response to user. Clear button
+                        will clear output results and user input.</li>
+
+                </ul>
+            </div>
+
+            <!-- Client-Server Architecture Diagram -->
+            <div class="client-server-architecture-diagram">
+                <h2>Client-Server Architecture Diagram:</h2>
+                <img src="{{ url_for('static', filename='images/Py_diagram.png') }}"
+                    alt="Client-Server Architecture Diagram" width="400" height="300">
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+
+        function showSymptomChecker() {
+            document.getElementById("symptomChecker").style.display = "block";
+            document.getElementById("healthInformation").style.display = "none";
+        }
+
+        function showHealthInformation() {
+            document.getElementById("symptomChecker").style.display = "none";
+            document.getElementById("healthInformation").style.display = "block";
+        }
+
+        function checkAndSubmit() {
+            var symptoms = document.getElementById("symptoms").value.trim();
+            if (symptoms === "") {
+                alert("Please enter your symptoms.");
+                //return false; // Prevent form submission
+            } else {
+                // Don't submit the form
+                //return false;
+                document.getElementById("myForm1").submit();
+                document.getElementById("symptomChecker").style.display = "block";
+            }
+        }
+        function checkASubmitHealth() {
+            var age = document.getElementById("age").value.trim();
+            if (age == "") {
+                alert("Please enter your age.");
+
+            } else {
+
+                document.getElementById("myForm2").submit();
+                document.getElementById("healthInformation").style.display = "block";
+            }
+        }
+
+        function clearFields() {
+            document.getElementById("symptoms").value = ""; // Clear textarea
+            document.getElementById("potentialCauses").innerHTML = ""; // Clear potential causes
+            document.getElementById("followupQuestions").innerHTML = ""; // Clear follow-up questions
+        }
+        function clearHealth() {
+            document.getElementById("age").value = ""; // Clear textarea
+            document.getElementById("heading").innerHTML = ""; // Clear potential causes
+            document.getElementById("resources").innerHTML = ""; // Clear follow-up questions
+        }
+    </script>
+</body>
+
+</html>
