@@ -166,3 +166,19 @@ input[type="number"] {
     margin-bottom: 5px; /* Adjust margin between items */
     text-align: left; 
 }
+
+table {
+    border: 1px solid #591769;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    border: 1px solid #591769;
+    padding: 10px;
+}
+
+th {
+    background-color: #EA4C89;
+    font-weight: bold;
+}
