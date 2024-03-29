@@ -102,6 +102,54 @@
                         person based on the user's gender and age.</li>
                 </ul>
             </div>
+            <div>
+                <h2>Project Findings</h2>
+
+                <table>
+                    <tr>
+                        <th>Ease of Developing</th>
+                        <th>Developer Community Support</th>
+                        <th>Error Handling and Debugging</th>
+                        <th>API Integration Details</th>
+                    </tr>
+                    <tr>
+                        <td><b>Pros:</b> Flask, a lightweight and beginner-friendly framework, supports REST APIs and
+                            simple Routing system makes web it easy to build web application integrate with external
+                            APIs and displaying its result to user.
+                            <b>Cons:</b>
+                            <li>I've observed that in Python web applications, after making a call to an API and
+                                receiving a response, reloading the application doesn't refresh the page but rather
+                                reissues the API call with the existing parameters in the URL.</li>
+                            <li>I haven't used multiple concurrent API calls for this project, so there's no need for
+                                dealing with asynchronous code. However, learning libraries like asyncio and
+                                understanding asynchronous programming can be complex.</li>
+                        </td>
+                        <td>
+                            <li>I can find support from various resources for learning and troubleshooting for this
+                                framework.</li>
+                            <li>Pallets. (n.d.). Flask API documentation (Version 3.0.x). Retrieved from
+                                https://flask.palletsprojects.com/en/3.0.x/api/</li>
+
+                        </td>
+                        <td>
+                            <li>Utilizing Flask's built-in error handlers and debug mode, along with logging and
+                                exception handling, ensures handling of errors during API integration. Also efficient
+                                debugging and resolution of issues, maintaining the reliability and performance of Flask
+                                applications interacting with external APIs.</li>
+                        </td>
+                        <td>
+                            <li>You can integrate external APIs with Python Flask using libraries like requests for
+                                simple HTTP requests or Flask extensions such as Flask-RESTful. Alternatively, consider
+                                custom wrapper classes for more tailored integration or asynchronous libraries like
+                                aiohttp for improved scalability.</li>
+                            <li>I have imported Python-Request library to handle post and get calls by request.post()
+                                and request.get() methods respectively.</li>
+                        </td>
+
+
+                    </tr>
+                </table>
+            </div>
 
         </div>
 
